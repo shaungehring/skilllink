@@ -79,7 +79,7 @@ skilllink scan
 
 This walks your directory, finds all `.md` files, and generates `catalog.yaml` with stub entries. It reads YAML frontmatter from each file to pre-populate names, descriptions, and tags. Then edit `catalog.yaml` to refine — that's what the AI uses to match tools to your project.
 
-#### Example agent frontmatter
+#### Example agent metadata
 
 ```yaml
 ---
@@ -90,7 +90,7 @@ model: haiku
 ---
 ```
 
-#### Example skill frontmatter
+#### Example skill metadata
 
 ```yaml
 ---
