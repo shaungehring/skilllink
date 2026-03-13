@@ -82,15 +82,40 @@ info "Found pip: $($PIP --version | head -1)"
 section "Installing skilllink from GitHub..."
 
 USER_INSTALL=false
+PIPX_INSTALL=false
 
-if $PIP install "$GITHUB_RAW" 2>/dev/null; then
-  : # success
-elif $PIP install --user "$GITHUB_RAW"; then
-  USER_INSTALL=true
-else
-  error "Installation failed."
-  error "Try manually: pip install git+${REPO}.git"
-  exit 1
+# Prefer pipx for CLI tools — it manages its own venv and avoids PEP 668 issues
+if command -v pipx &>/dev/null; then
+  info "Found pipx — using it for installation."
+  if pipx install "$GITHUB_RAW"; then
+    PIPX_INSTALL=true
+  else
+    warn "pipx install failed, falling back to pip..."
+  fi
+fi
+
+if ! $PIPX_INSTALL; then
+  if $PIP install "$GITHUB_RAW" 2>/dev/null; then
+    : # success (system pip, no externally-managed restriction)
+  elif $PIP install --user --break-system-packages "$GITHUB_RAW" 2>/dev/null; then
+    USER_INSTALL=true
+  elif $PIP install --user "$GITHUB_RAW" 2>/dev/null; then
+    USER_INSTALL=true
+  else
+    error "Installation failed."
+    error ""
+    error "Your Python environment is externally managed (PEP 668)."
+    error "The recommended fix is to install via pipx:"
+    error ""
+    error "  brew install pipx"
+    error "  pipx install git+${REPO}.git"
+    error ""
+    error "Or install into a virtual environment manually:"
+    error "  python3 -m venv ~/.skilllink-venv"
+    error "  ~/.skilllink-venv/bin/pip install git+${REPO}.git"
+    error "  ln -sf ~/.skilllink-venv/bin/skilllink /usr/local/bin/skilllink"
+    exit 1
+  fi
 fi
 
 # ---- PATH fix (user install or missing skilllink) --------------------------
@@ -129,7 +154,9 @@ add_to_path() {
   fi
 }
 
-if $USER_INSTALL; then
+if $PIPX_INSTALL; then
+  : # pipx manages its own PATH via ~/.local/bin — no action needed
+elif $USER_INSTALL; then
   warn "Installed to user site-packages (--user)."
   add_to_path "$USER_BIN"
 elif ! command -v skilllink &>/dev/null; then
