@@ -1,4 +1,4 @@
-# skilllink
+# Claude Skilllink
 
 > AI-powered skill and agent symlink manager for Claude Code.
 
@@ -78,6 +78,14 @@ skilllink scan
 ```
 
 This walks your directory, finds all `.md` files, and generates `catalog.yaml` with stub entries. It reads YAML frontmatter from each file to pre-populate names, descriptions, and tags. Then edit `catalog.yaml` to refine — that's what the AI uses to match tools to your project.
+
+We recommend you keep an organized folder structure of `agents` `skills` and `plugins` in your `~/.skilllink` folder. You can find Agents, Plugins, and Skills all over Github
+
+**Examples**
+- https://github.com/ComposioHQ/awesome-claude-skills
+- https://github.com/travisvn/awesome-claude-skills
+- https://awesome-skills.com/
+- https://github.com/VoltAgent/awesome-claude-code-subagents
 
 #### Example agent metadata
 
