@@ -125,13 +125,23 @@ section "Checking PATH..."
 USER_BIN="$($PYTHON -m site --user-base 2>/dev/null)/bin"
 SHELL_RC=""
 
-# Detect the user's shell config file
-if [ -n "${BASH_VERSION:-}" ] || [ "$(basename "${SHELL:-}")" = "bash" ]; then
-  SHELL_RC="$HOME/.bashrc"
-  [ -f "$HOME/.bash_profile" ] && SHELL_RC="$HOME/.bash_profile"
-elif [ -n "${ZSH_VERSION:-}" ] || [ "$(basename "${SHELL:-}")" = "zsh" ]; then
-  SHELL_RC="$HOME/.zshrc"
-fi
+# Detect the user's shell config file based on their login shell ($SHELL),
+# not the current interpreter — this script is often run via "curl | bash"
+# even on systems where the user's login shell is zsh.
+case "$(basename "${SHELL:-}")" in
+  zsh)  SHELL_RC="$HOME/.zshrc" ;;
+  bash) SHELL_RC="$HOME/.bashrc"
+        [ -f "$HOME/.bash_profile" ] && SHELL_RC="$HOME/.bash_profile" ;;
+  *)
+    # Fall back to running-interpreter detection
+    if [ -n "${ZSH_VERSION:-}" ]; then
+      SHELL_RC="$HOME/.zshrc"
+    elif [ -n "${BASH_VERSION:-}" ]; then
+      SHELL_RC="$HOME/.bashrc"
+      [ -f "$HOME/.bash_profile" ] && SHELL_RC="$HOME/.bash_profile"
+    fi
+    ;;
+esac
 
 add_to_path() {
   local dir="$1"
