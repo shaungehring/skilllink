@@ -9,7 +9,7 @@ Stop stuffing every skill and agent into `~/.claude` and blowing up your context
 ## How it works
 
 ```
-~/AITools/          ← your master library (hundreds of tools)
+~/.skilllink/          ← your master library (hundreds of tools)
   catalog.yaml        ← index with tags and descriptions
   skills/
   agents/
@@ -61,7 +61,7 @@ pip install -e .
 
 ### 1. Point skilllink at your tooling directory
 
-By default it looks at `~/.AITools`. Override with an env var:
+By default it looks at `~/.skilllink`. Override with an env var:
 
 ```bash
 export SKILLLINK_TOOLING_DIR=/path/to/your/AITooling
@@ -71,7 +71,7 @@ Add this to your `~/.zshrc` or `~/.bashrc`.
 
 ### 2. Build your catalog
 
-If you already have tools organized in `~/.AITools`:
+If you already have tools organized in `~/.skilllink`:
 
 ```bash
 skilllink scan
@@ -201,11 +201,11 @@ myproject/
   CLAUDE.md
   .claude/
     skills/
-      react-toolkit.md  -> ~/AITools/skills/react/SKILL.md
-      typescript-strict.md -> ~/AITools/skills/typescript/SKILL.md
+      react-toolkit.md  -> ~/.skilllink/skills/react/SKILL.md
+      typescript-strict.md -> ~/.skilllink/skills/typescript/SKILL.md
     agents/
-      project-scaffolding-agent.md -> ~/AITools/agents/project-init/AGENT.md   ★ always
-      fastapi-agent.md -> ~/AITools/agents/fastapi/AGENT.md
+      project-scaffolding-agent.md -> ~/.skilllink/agents/project-init/AGENT.md   ★ always
+      fastapi-agent.md -> ~/.skilllink/agents/fastapi/AGENT.md
 ```
 
 Claude Code loads skills and agents from `.claude/` — only the symlinks that are there get loaded.
@@ -217,7 +217,7 @@ Claude Code loads skills and agents from `.claude/` — only the symlinks that a
 The catalog schema is the standard. If you publish a skill or agent:
 
 1. Include a `catalog-entry.yaml` with your recommended tags and description
-2. Users drop your tool into their `~/.AITools/` folder
+2. Users drop your tool into their `~/.skilllink/` folder
 3. They add your `catalog-entry.yaml` content to their `catalog.yaml`
 4. Done — your tool is discoverable by `/skill-this-project`
 
